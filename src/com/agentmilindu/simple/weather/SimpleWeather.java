@@ -9,6 +9,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.agentmilindu.simple.weather.exceptions.NoDataException;
+
 import NET.webserviceX.www.GlobalWeatherSoapProxy;
 
 public class SimpleWeather {
@@ -17,22 +19,37 @@ public class SimpleWeather {
 	public static DataSet getCitiesByCountry(String countryName) {
 		try {
 			String output = globalWeather.getCitiesByCountry(countryName);
-			//DataSet dataSet = unmarshal("<NewDataSet><Table><Country>Sri Lanka</Country><City>Katunayake</City></Table><Table><Country>Sri Lanka</Country><City>Katunayake</City></Table></NewDataSet>");
-			DataSet dataSet = unmarshal(output);
+			DataSet dataSet = (DataSet)unmarshal(output);
 			return dataSet;
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			return null;
 		}		
 	}
+	
+	public static CurrentWeather getWeather(String cityName, String countryName) throws NoDataException{
+		try {
+			String output = globalWeather.getWeather(cityName, countryName);
+			if("Data Not Found".equals(output)){
+				throw new NoDataException();
+			}
+			else{
+				CurrentWeather currentWeather = (CurrentWeather)unmarshal(output);
+				return currentWeather;
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			throw new NoDataException();
+		}		
+	}
+	
 		
-	private static DataSet unmarshal(String input) {
+	private static Object unmarshal(String input) {
 		try{
-			JAXBContext jaxbContext = JAXBContext.newInstance(DataSet.class);
+			JAXBContext jaxbContext = JAXBContext.newInstance(DataSet.class, CurrentWeather.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			StringReader reader = new StringReader(input);
-			DataSet countres = (DataSet)jaxbUnmarshaller.unmarshal( reader );
-			return countres;
+			return jaxbUnmarshaller.unmarshal( reader );
 		}
 		catch(JAXBException e){
 			e.printStackTrace();
