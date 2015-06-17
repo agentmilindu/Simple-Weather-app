@@ -1,12 +1,14 @@
 package com.agentmilindu.simple.weather;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement( name="Table")
+@XmlAccessorType (XmlAccessType.FIELD)
 public class Table {
 
     private String Country;
-
     private String City;
 
 	public String getCountry() {
