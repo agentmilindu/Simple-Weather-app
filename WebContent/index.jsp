@@ -37,7 +37,6 @@
                 <h1 class="title">Simple Weather App</h1>
                 <nav>
                     <ul>
-                        <li><a href="#">Report</a></li>
                         <li><a href="#">About</a></li>
                     </ul>
                 </nav>
